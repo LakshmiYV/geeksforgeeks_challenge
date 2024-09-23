@@ -7,8 +7,7 @@ import java.util.*;
 class GFG {
     // Driver code
     public static void main(String[] args) throws Exception {
-        BufferedReader br =
-            new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int t = Integer.parseInt(br.readLine().trim());
         while (t-- > 0) {
             int n = Integer.parseInt(br.readLine().trim());
@@ -19,7 +18,7 @@ class GFG {
                 a[i] = Integer.parseInt(str[i]);
             }
 
-            int[] ans = new Solve().findTwoElement(a, n);
+            int[] ans = new Solve().findTwoElement(a);
             System.out.println(ans[0] + " " + ans[1]);
         }
     }
@@ -28,34 +27,31 @@ class GFG {
 
 
 class Solve {
-    int[] findTwoElement(int arr[], int n) {
-        int[] result = new int[2];
-        
-        // Calculate expected sum and sum of squares
-        long sumN = (long)n * (n + 1) / 2;
-        long sumSqN = (long)n * (n + 1) * (2 * n + 1) / 6;
-        
-        // Calculate actual sum and sum of squares
-        long sumActual = 0, sumSqActual = 0;
+    int[] findTwoElement(int arr[]) {
+        int n = arr.length;
+        int repeating = -1, missing = -1;
+
+        // Traverse the array and mark visited elements
         for (int i = 0; i < n; i++) {
-            sumActual += arr[i];
-            sumSqActual += (long)arr[i] * arr[i];
+            int value = Math.abs(arr[i]);
+            
+            // If the value is already negative, it means it's repeated
+            if (arr[value - 1] < 0) {
+                repeating = value;
+            } else {
+                // Mark the index corresponding to the value as negative
+                arr[value - 1] = -arr[value - 1];
+            }
         }
-        
-        // Calculate differences
-        long diffSum = sumN - sumActual; // X - Y
-        long diffSumSq = sumSqN - sumSqActual; // X^2 - Y^2
-        
-        // Calculate X + Y
-        long sumXPlusY = diffSumSq / diffSum;
-        
-        // Calculate X and Y
-        int X = (int)((diffSum + sumXPlusY) / 2);
-        int Y = (int)(sumXPlusY - X);
-        
-        result[0] = Y; // Repeating
-        result[1] = X; // Missing
-        
-        return result;
+
+        // Find the missing number (positive index)
+        for (int i = 0; i < n; i++) {
+            if (arr[i] > 0) {
+                missing = i + 1;
+                break;
+            }
+        }
+
+        return new int[]{repeating, missing};
     }
 }
