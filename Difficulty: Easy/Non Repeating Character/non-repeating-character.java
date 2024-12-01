@@ -1,27 +1,26 @@
 //{ Driver Code Starts
-//Initial Template for Java
+// Initial Template for Java
 
 import java.io.*;
 import java.lang.*;
 import java.util.*;
 
-class Driverclass
-{
-    public static void main(String args[])
-    {
+class Driverclass {
+    public static void main(String args[]) {
         Scanner sc = new Scanner(System.in);
         int t = sc.nextInt();
-        
-        while(t-- > 0)
-        {
+
+        while (t-- > 0) {
             String st = sc.next();
-            
-            char ans=new Solution().nonrepeatingCharacter(st);
-            
-            if(ans!='$')
-            System.out.println(ans);
+
+            char ans = new Solution().nonRepeatingChar(st);
+
+            if (ans != '$')
+                System.out.println(ans);
             else
-            System.out.println(-1);
+                System.out.println(-1);
+
+            System.out.println("~");
         }
     }
 }
@@ -29,20 +28,28 @@ class Driverclass
 // } Driver Code Ends
 
 
-class Solution {
-    static char nonrepeatingCharacter(String S) {
-        HashMap<Character, Integer> frequencyMap = new HashMap<>();
+// User function Template for Java
 
-        for (char c : S.toCharArray()) {
-            frequencyMap.put(c, frequencyMap.getOrDefault(c, 0) + 1);
+class Solution {
+    // Function to find the first non-repeating character in a string.
+    static char nonRepeatingChar(String s) {
+        // Create a hashmap to store frequency of each character
+        HashMap<Character, Integer> freqMap = new HashMap<>();
+        
+        // Populate the frequency map
+        for (char ch : s.toCharArray()) {
+            freqMap.put(ch, freqMap.getOrDefault(ch, 0) + 1);
         }
-        for (char c : S.toCharArray()) {
-            if (frequencyMap.get(c) == 1) {
-                return c;
+        
+        // Traverse the string to find the first non-repeating character
+        for (char ch : s.toCharArray()) {
+            if (freqMap.get(ch) == 1) {
+                return ch; // Return the first non-repeating character
             }
         }
+        
+        // If no non-repeating character found, return '$'
         return '$';
     }
 }
-
 
