@@ -17,6 +17,16 @@ class GFG {
             if (ans.size() == 0)
                 System.out.println("-1");
             else {
+                ans.sort((list1, list2) -> {
+                    int size = Math.min(list1.size(), list2.size());
+                    for (int i = 0; i < size; i++) {
+                        if (!list1.get(i).equals(list2.get(i))) {
+                            return list1.get(i) - list2.get(i);
+                        }
+                    }
+                    return list1.size() - list2.size();
+                });
+
                 for (int i = 0; i < ans.size(); i++) {
                     System.out.print("[");
                     for (int j = 0; j < ans.get(i).size(); j++)
@@ -25,51 +35,50 @@ class GFG {
                 }
                 System.out.println();
             }
+
+            System.out.println("~");
         }
     }
 }
 // } Driver Code Ends
 
 
-// User function Template for Java
-
 class Solution {
     public ArrayList<ArrayList<Integer>> nQueen(int n) {
         ArrayList<ArrayList<Integer>> result = new ArrayList<>();
-        int[] board = new int[n];  // This array will hold the row positions for each column
-        solveNQueens(result, board, 0, n);
+        int[] board = new int[n]; // Stores the row positions of queens
+        solveNQueen(0, n, board, result);
         return result;
     }
-    
-    private void solveNQueens(ArrayList<ArrayList<Integer>> result, int[] board, int col, int n) {
-        if (col == n) {  // All queens are placed
-            addSolution(result, board, n);
+
+    private void solveNQueen(int col, int n, int[] board, ArrayList<ArrayList<Integer>> result) {
+        if (col == n) {
+            // Found a valid placement, add to result
+            ArrayList<Integer> solution = new ArrayList<>();
+            for (int row : board) {
+                solution.add(row + 1); // Convert 0-based index to 1-based
+            }
+            result.add(solution);
             return;
         }
-        
-        for (int i = 0; i < n; i++) {  // Try placing this queen in all rows
-            if (isSafe(board, col, i)) {
-                board[col] = i + 1;  // Place queen at (i, col) (1-indexed)
-                solveNQueens(result, board, col + 1, n);
+
+        // Try placing a queen in each row of the current column
+        for (int row = 0; row < n; row++) {
+            if (isSafe(row, col, board)) {
+                board[col] = row;
+                solveNQueen(col + 1, n, board, result);
             }
         }
     }
-    
-    private boolean isSafe(int[] board, int col, int row) {
-        for (int i = 0; i < col; i++) {
-            if (board[i] == row + 1 ||  // Check row
-                Math.abs(board[i] - (row + 1)) == Math.abs(i - col)) {  // Check diagonal
+
+    private boolean isSafe(int row, int col, int[] board) {
+        for (int prevCol = 0; prevCol < col; prevCol++) {
+            int prevRow = board[prevCol];
+            // Check same row and diagonals
+            if (prevRow == row || Math.abs(prevRow - row) == Math.abs(prevCol - col)) {
                 return false;
             }
         }
         return true;
-    }
-    
-    private void addSolution(ArrayList<ArrayList<Integer>> result, int[] board, int n) {
-        ArrayList<Integer> solution = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            solution.add(board[i]);
-        }
-        result.add(solution);
     }
 }
