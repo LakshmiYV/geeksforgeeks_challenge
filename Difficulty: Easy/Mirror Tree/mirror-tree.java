@@ -2,15 +2,16 @@
 // Initial Template for Java
 
 // Contributed by Sudarshan Sharma
-import java.util.LinkedList;
-import java.util.Queue;
 import java.io.*;
 import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
 
 class Node {
     int data;
     Node left;
     Node right;
+
     Node(int data) {
         this.data = data;
         left = null;
@@ -75,20 +76,36 @@ class GfG {
 
         return root;
     }
-    void inOrder(Node node) {
-        if (node == null) {
-            return;
+
+    static String levelOrder(Node root) {
+        if (root == null) return "N\n";
+
+        StringBuilder str = new StringBuilder();
+        Queue<Node> qq = new LinkedList<>();
+        qq.add(root);
+
+        while (!qq.isEmpty()) {
+            Node curr = qq.poll();
+
+            if (curr == null) {
+                str.append("N ");
+                continue;
+            }
+            str.append(curr.data).append(" ");
+            qq.add(curr.left);
+            qq.add(curr.right);
         }
 
-        inOrder(node.left);
-        System.out.print(node.data + " ");
+        // Trim trailing non-digit characters
+        while (str.length() > 0 && !Character.isDigit(str.charAt(str.length() - 1))) {
+            str.deleteCharAt(str.length() - 1);
+        }
 
-        inOrder(node.right);
+        return str.toString();
     }
 
     public static void main(String[] args) throws IOException {
-        BufferedReader br =
-            new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         int t = Integer.parseInt(br.readLine());
 
@@ -98,9 +115,8 @@ class GfG {
 
             Solution g = new Solution();
             g.mirror(root);
-            GfG mt = new GfG();
-            mt.inOrder(root);
-            System.out.println();
+            System.out.println(levelOrder(root));
+            System.out.println("~");
         }
     }
 }
@@ -108,38 +124,19 @@ class GfG {
 // } Driver Code Ends
 
 
-// User function Template for Java
+class Solution {
+    // Function to convert a binary tree into its mirror tree.
+    void mirror(Node node) {
+        // Base case: If node is null, return
+        if (node == null) return;
 
-// function Template for Java
+        // Swap left and right children
+        Node temp = node.left;
+        node.left = node.right;
+        node.right = temp;
 
-// FUNCTION CODE
-/* A Binary Tree node
-class Node
-{
-    int data;
-    Node left, right;
-   Node(int item)
-   {
-        data = item;
-        left = right = null;
+        // Recursively mirror left and right subtrees
+        mirror(node.left);
+        mirror(node.right);
     }
-} */
-
-class Solution {  
-    // Function to convert a binary tree into its mirror tree.  
-    void mirror(Node node) {  
-        // Base case: if the node is null, return  
-        if (node == null) {  
-            return;  
-        }  
-
-        // Swap the left and right child  
-        Node temp = node.left;  
-        node.left = node.right;  
-        node.right = temp;  
-
-        // Recursively call the function for left and right subtrees  
-        mirror(node.left);  
-        mirror(node.right);  
-    }  
 }
