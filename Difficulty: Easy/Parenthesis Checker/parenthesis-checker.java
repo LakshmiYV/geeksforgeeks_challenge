@@ -1,68 +1,50 @@
 //{ Driver Code Starts
-import java.util.*;
 import java.io.*;
 import java.lang.*;
+import java.util.*;
 
-class Driverclass
-{
-    public static void main(String args[])
-    {
+class Driverclass {
+    public static void main(String args[]) {
         Scanner sc = new Scanner(System.in);
-        
-        //Reading total number of testcases
-        int t= sc.nextInt();
-        
-        while(t-- >0)
-        {
-            //reading the string
+
+        // Reading total number of testcases
+        int t = sc.nextInt();
+
+        while (t-- > 0) {
+            // reading the string
             String st = sc.next();
-            
-            //calling ispar method of Paranthesis class 
-            //and printing "balanced" if it returns true
-            //else printing "not balanced"
-            if(new Solution().ispar(st) == true)
-                System.out.println("balanced");
+
+            // calling ispar method of Paranthesis class
+            // and printing "balanced" if it returns true
+            // else printing "not balanced"
+            if (new Solution().isBalanced(st) == true)
+                System.out.println("true");
             else
-                System.out.println("not balanced");
-        
+                System.out.println("false");
+
+            System.out.println("~");
         }
     }
 }
 // } Driver Code Ends
 
 
-
 class Solution {
-    // Function to check if brackets are balanced or not.
-    static boolean ispar(String x) {
-        // Stack to keep track of opening brackets.
+    static boolean isBalanced(String s) {
         Stack<Character> stack = new Stack<>();
-        
-        // Traverse through the string.
-        for (int i = 0; i < x.length(); i++) {
-            char ch = x.charAt(i);
-            
-            // If it's an opening bracket, push it onto the stack.
-            if (ch == '{' || ch == '[' || ch == '(') {
+        for (char ch : s.toCharArray()) {
+            if (ch == '(' || ch == '{' || ch == '[') {
                 stack.push(ch);
-            }
-            // If it's a closing bracket, check for balance.
-            else {
-                // If stack is empty, no opening bracket to match with, return false.
-                if (stack.isEmpty()) {
-                    return false;
-                }
-                
-                // Pop the top of the stack and check if it matches the current closing bracket.
+            } else {
+                if (stack.isEmpty()) return false;
                 char top = stack.pop();
-                if ((ch == '}' && top != '{') || (ch == ']' && top != '[') || (ch == ')' && top != '(')) {
+                if ((ch == ')' && top != '(') ||
+                    (ch == '}' && top != '{') ||
+                    (ch == ']' && top != '[')) {
                     return false;
                 }
             }
         }
-        
-        // If the stack is empty after processing the entire string, it's balanced.
         return stack.isEmpty();
     }
 }
-
