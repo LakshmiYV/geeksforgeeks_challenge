@@ -13,7 +13,6 @@ public class Main {
 
         while (t-- > 0) {
             // taking total number of elements
-            int k = Integer.parseInt(br.readLine());
             String line = br.readLine();
             String[] tokens = line.split(" ");
 
@@ -28,11 +27,13 @@ public class Main {
             int[] arr = new int[array.size()];
             int idx = 0;
             for (int i : array) arr[idx++] = i;
-            ArrayList<Integer> res = new Solution().max_of_subarrays(k, arr);
+            int k = Integer.parseInt(br.readLine());
+            ArrayList<Integer> res = new Solution().maxOfSubarrays(arr, k);
 
             // printing the elements of the ArrayList
             for (int i = 0; i < res.size(); i++) System.out.print(res.get(i) + " ");
             System.out.println();
+            System.out.println("~");
         }
     }
 }
@@ -42,32 +43,29 @@ public class Main {
 
 
 class Solution {
-    // Function to find maximum of each subarray of size k.
-    public ArrayList<Integer> max_of_subarrays(int k, int arr[]) {
+    public ArrayList<Integer> maxOfSubarrays(int arr[], int k) {
         ArrayList<Integer> result = new ArrayList<>();
-        Deque<Integer> deque = new LinkedList<>();
+        Deque<Integer> dq = new LinkedList<>();
         
-        // Traverse the array
         for (int i = 0; i < arr.length; i++) {
-            // Remove elements that are out of this window
-            if (!deque.isEmpty() && deque.peekFirst() == i - k) {
-                deque.pollFirst();
+            // Remove elements out of this window
+            while (!dq.isEmpty() && dq.peekFirst() < i - k + 1) {
+                dq.pollFirst();
             }
-            
-            // Remove all elements smaller than the current element from the deque
-            while (!deque.isEmpty() && arr[deque.peekLast()] <= arr[i]) {
-                deque.pollLast();
+
+            // Remove all elements smaller than the current element
+            while (!dq.isEmpty() && arr[dq.peekLast()] <= arr[i]) {
+                dq.pollLast();
             }
-            
-            // Add the current element at the back of the deque
-            deque.offerLast(i);
-            
-            // The window is fully traversed, add the maximum element (front of deque) to the result
+
+            // Add current element index to deque
+            dq.offerLast(i);
+
+            // Store the maximum of the first window onwards
             if (i >= k - 1) {
-                result.add(arr[deque.peekFirst()]);
+                result.add(arr[dq.peekFirst()]);
             }
         }
-        
         return result;
     }
 }
