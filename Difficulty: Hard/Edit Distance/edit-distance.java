@@ -9,12 +9,13 @@ class GFG {
         int T = Integer.parseInt(br.readLine().trim());
         while (T-- > 0) {
             String s1 = br.readLine();
-            String[] S = s1.split(" ");
-            String s = S[0];
-            String t = S[1];
+            String s2 = br.readLine();
+
             Solution ob = new Solution();
-            int ans = ob.editDistance(s, t);
+            int ans = ob.editDistance(s1, s2);
             System.out.println(ans);
+
+            System.out.println("~");
         }
     }
 }
@@ -23,35 +24,32 @@ class GFG {
 
 
 class Solution {
-    public int editDistance(String str1, String str2) {
-        int n = str1.length();
-        int m = str2.length();
-        
+    public int editDistance(String s1, String s2) {
+        int n = s1.length();
+        int m = s2.length();
         int[][] dp = new int[n + 1][m + 1];
-        
-        // Base cases
+
+        // Base case: converting empty s1 to s2
         for (int i = 0; i <= n; i++) {
-            dp[i][0] = i;  // All deletions
+            dp[i][0] = i; // Removing all characters
         }
         for (int j = 0; j <= m; j++) {
-            dp[0][j] = j;  // All insertions
+            dp[0][j] = j; // Inserting all characters
         }
-        
-        // Fill dp table
+
+        // Filling DP table
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= m; j++) {
-                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
-                    dp[i][j] = dp[i - 1][j - 1];
+                if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1]; // No operation needed
                 } else {
-                    dp[i][j] = Math.min(
-                        Math.min(dp[i - 1][j] + 1, // Remove
-                                 dp[i][j - 1] + 1), // Insert
-                        dp[i - 1][j - 1] + 1 // Replace
-                    );
+                    dp[i][j] = 1 + Math.min(dp[i - 1][j],      // Remove
+                                  Math.min(dp[i][j - 1],      // Insert
+                                           dp[i - 1][j - 1])); // Replace
                 }
             }
         }
-        
+
         return dp[n][m];
     }
 }
