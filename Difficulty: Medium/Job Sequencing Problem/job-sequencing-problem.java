@@ -1,90 +1,87 @@
 //{ Driver Code Starts
-import java.io.*;
-import java.lang.*;
+// Initial Template for Java
 import java.util.*;
 
-class Job {
-    int id, profit, deadline;
-    Job(int x, int y, int z){
-        this.id = x;
-        this.deadline = y;
-        this.profit = z; 
-    }
-}
 
-class GfG {
-    public static void main(String[] args) throws IOException{
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        
-        //testcases
-		int t = Integer.parseInt(br.readLine().trim());
-		while(t-->0){
-            String inputLine[] = br.readLine().trim().split(" ");
-            
-            //size of array
-            int n = Integer.parseInt(inputLine[0]);
-            Job[] arr = new Job[n];
-            inputLine = br.readLine().trim().split(" ");
-            
-            //adding id, deadline, profit
-            for(int i=0, k=0; i<n; i++){
-                arr[i] = new Job(Integer.parseInt(inputLine[k++]), Integer.parseInt(inputLine[k++]), Integer.parseInt(inputLine[k++]));
-            }
-            
-            Solution ob = new Solution();
-            
-            //function call
-            int[] res = ob.JobScheduling(arr, n);
-            System.out.println (res[0] + " " + res[1]);
-        }
-    }
-}
 // } Driver Code Ends
 
+import java.util.*;
 
-class Solution
-{
-    // Function to find the maximum profit and the number of jobs done.
-    int[] JobScheduling(Job arr[], int n)
-    {
+class Solution {
+    public ArrayList<Integer> jobSequencing(int[] deadline, int[] profit) {
+        int n = deadline.length;
+        Job[] jobs = new Job[n];
+
+        // Create job objects
+        for (int i = 0; i < n; i++) {
+            jobs[i] = new Job(deadline[i], profit[i]);
+        }
+
         // Sort jobs in decreasing order of profit
-        Arrays.sort(arr, (a, b) -> b.profit - a.profit);
-        
-        // Initialize slots to keep track of free slots
-        boolean[] slot = new boolean[n];
-        
-        // To keep track of the number of jobs and the total profit
-        int numJobs = 0;
-        int maxProfit = 0;
-        
-        // Process each job in the sorted order
-        for (Job job : arr) {
-            // Find a free slot for this job (if any)
-            for (int j = Math.min(n, job.deadline) - 1; j >= 0; j--) {
-                // If slot is free
-                if (!slot[j]) {
-                    // Assign this job to slot j
-                    slot[j] = true;
-                    numJobs++;
+        Arrays.sort(jobs, (a, b) -> b.profit - a.profit);
+
+        // Find maximum deadline
+        int maxDeadline = 0;
+        for (int i = 0; i < n; i++) {
+            maxDeadline = Math.max(maxDeadline, jobs[i].deadline);
+        }
+
+        // Create a slot array to keep track of available slots
+        int[] slots = new int[maxDeadline + 1];
+        Arrays.fill(slots, -1);
+
+        int maxProfit = 0, countJobs = 0;
+
+        // Assign jobs greedily
+        for (Job job : jobs) {
+            // Find the latest available slot before deadline
+            for (int j = job.deadline; j > 0; j--) {
+                if (slots[j] == -1) {  // If slot is free
+                    slots[j] = job.profit; // Assign job to this slot
                     maxProfit += job.profit;
+                    countJobs++;
                     break;
                 }
             }
         }
-        
-        // Return the result as an array of size 2
-        return new int[] { numJobs, maxProfit };
+
+        return new ArrayList<>(Arrays.asList(countJobs, maxProfit));
     }
 }
 
-
-/*
+// Helper class to store job details
 class Job {
-    int id, profit, deadline;
-    Job(int x, int y, int z){
-        this.id = x;
-        this.deadline = y;
-        this.profit = z; 
+    int deadline, profit;
+    Job(int d, int p) {
+        this.deadline = d;
+        this.profit = p;
     }
 }
-*/
+
+
+
+//{ Driver Code Starts.
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int t = Integer.parseInt(sc.nextLine().trim());
+
+        while (t-- > 0) {
+            String[] deadlineInput = sc.nextLine().trim().split("\\s+");
+            int[] deadline =
+                Arrays.stream(deadlineInput).mapToInt(Integer::parseInt).toArray();
+
+            String[] profitInput = sc.nextLine().trim().split("\\s+");
+            int[] profit =
+                Arrays.stream(profitInput).mapToInt(Integer::parseInt).toArray();
+            Solution obj = new Solution();
+            ArrayList<Integer> result = obj.jobSequencing(deadline, profit);
+            System.out.println(result.get(0) + " " + result.get(1));
+            System.out.println("~");
+        }
+
+        sc.close();
+    }
+}
+// } Driver Code Ends
